@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>內部系統登入</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================
+       ⚙️ 設定區 — 只需修改這裡
+       N8N_LOGIN_URL = 你的 n8n Login Webhook 網址
+       REDIRECT_URL  = 登入成功後要跳轉的頁面
+    ============================================ */
+    :root {
+      --n8n-login-url: "https://YOUR_N8N_URL/webhook/login";
+      --redirect-url:  "https://YOUR_APP_URL";
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0a0a0f;
+      --surface:    #13131a;
+      --border:     #2a2a3a;
+      --border-focus: #5b6af0;
+      --text:       #e8e8f0;
+      --text-dim:   #6b6b80;
+      --accent:     #5b6af0;
+      --accent-2:   #8b5cf6;
+      --danger:     #f05b5b;
+      --success:    #5bf0a0;
+      --radius:     12px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      overflow: hidden;
+    }
+
+    /* 背景網格 */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(91,106,240,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91,106,240,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 光暈效果 */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(91,106,240,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px 40px;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 40px 80px rgba(0,0,0,0.5);
+      animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Logo 區 */
+    .logo-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40px;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 8px 24px rgba(91,106,240,0.35);
+    }
+
+    .logo-title {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+
+    .logo-sub {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-weight: 300;
+      margin-top: -6px;
+    }
+
+    /* 表單 */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      font-size: 16px;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+
+    input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 14px 13px 42px;
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(91,106,240,0.15);
+    }
+
+    input:focus + .input-icon,
+    .input-wrap:focus-within .input-icon {
+      color: var(--accent);
+    }
+
+    input::placeholder { color: #3a3a50; }
+
+    /* 切換密碼顯示 */
+    .toggle-pw {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    .toggle-pw:hover { color: var(--text); }
+
+    /* 錯誤訊息 */
+    .error-msg {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(240,91,91,0.1);
+      border: 1px solid rgba(240,91,91,0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--danger);
+      margin-bottom: 18px;
+      animation: shake 0.4s ease;
+    }
+
+    .error-msg.show { display: flex; }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60%  { transform: translateX(-4px); }
+      40%,80%  { transform: translateX(4px); }
+    }
+
+    /* 登入按鈕 */
+    .btn-login {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(91,106,240,0.4);
+      letter-spacing: 0.2px;
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-login:hover:not(:disabled) {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px rgba(91,106,240,0.5);
+    }
+
+    .btn-login:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-login .btn-text { transition: opacity 0.2s; }
+
+    .btn-login.loading .btn-text { opacity: 0; }
+
+    .spinner {
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px; height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    .btn-login.loading .spinner { display: block; }
+
+    @keyframes spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* 底部 */
+    .footer {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .footer span {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--success);
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+      vertical-align: middle;
+      margin-bottom: 1px;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="card">
+
+    <div class="logo-area">
+      <div class="logo-icon">🔐</div>
+      <div class="logo-title">內部系統</div>
+      <div class="logo-sub">請使用您的帳號登入</div>
+    </div>
+
+    <div class="error-msg" id="errorMsg">
+      <span>⚠️</span>
+      <span id="errorText">帳號或密碼錯誤</span>
+    </div>
+
+    <div class="form-group">
+      <label for="username">帳號</label>
+      <div class="input-wrap">
+        <input
+          type="text"
+          id="username"
+          placeholder="輸入您的帳號"
+          autocomplete="username"
+          spellcheck="false"
+        />
+        <span class="input-icon">👤</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">密碼</label>
+      <div class="input-wrap">
+        <input
+          type="password"
+          id="password"
+          placeholder="輸入您的密碼"
+          autocomplete="current-password"
+        />
+        <span class="input-icon">🔑</span>
+        <button class="toggle-pw" type="button" id="togglePw" title="顯示/隱藏密碼">👁</button>
+      </div>
+    </div>
+
+    <button class="btn-login" id="loginBtn" type="button">
+      <span class="btn-text">登入</span>
+      <div class="spinner"></div>
+    </button>
+
+    <div class="footer">
+      <span></span>安全連線 · 內部專用
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ============================================
+  // ⚙️ 請修改這兩個設定
+  // ============================================
+  const N8N_LOGIN_URL = 'https://YOUR_N8N_URL/webhook/login';  // ← 改成你的 n8n webhook 網址
+  const REDIRECT_URL  = 'https://YOUR_APP_URL';                // ← 登入成功後跳轉的頁面
+  // ============================================
+
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const loginBtn      = document.getElementById('loginBtn');
+  const errorMsg      = document.getElementById('errorMsg');
+  const errorText     = document.getElementById('errorText');
+  const togglePw      = document.getElementById('togglePw');
+
+  // 切換密碼顯示
+  togglePw.addEventListener('click', () => {
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+    togglePw.textContent = isPassword ? '🙈' : '👁';
+  });
+
+  // Enter 鍵登入
+  [usernameInput, passwordInput].forEach(el => {
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleLogin();
+    });
+  });
+
+  loginBtn.addEventListener('click', handleLogin);
+
+  function showError(msg) {
+    errorText.textContent = msg;
+    errorMsg.classList.add('show');
+  }
+
+  function hideError() {
+    errorMsg.classList.remove('show');
+  }
+
+  function setLoading(on) {
+    loginBtn.disabled = on;
+    loginBtn.classList.toggle('loading', on);
+  }
+
+  async function handleLogin() {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    hideError();
+
+    if (!username || !password) {
+      showError('請輸入帳號與密碼');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch(N8N_LOGIN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+
+      if (data.success && data.token) {
+        // 儲存 Token 到瀏覽器
+        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('auth_user', data.username);
+        localStorage.setItem('auth_expires', data.expiresAt);
+
+        // 跳轉到系統頁面
+        window.location.href = REDIRECT_URL;
+      } else {
+        showError(data.message || '帳號或密碼錯誤');
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+
+    } catch (err) {
+      showError('連線失敗，請稍後再試');
+      console.error('Login error:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // 頁面載入時，如果已有有效 Token 則直接跳轉
+  (function checkExistingToken() {
+    const token   = localStorage.getItem('auth_token');
+    const expires = localStorage.getItem('auth_expires');
+    if (token && expires && new Date(expires) > new Date()) {
+      window.location.href = REDIRECT_URL;
+    }
+  })();
+
+  // 自動 focus 帳號欄
+  usernameInput.focus();
+</script>
+</body>
+</html>
