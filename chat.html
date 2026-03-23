@@ -341,7 +341,7 @@
         <div class="welcome-title" id="welcomeTitle">👋 您好，歡迎使用業績查詢系統</div>
         <div class="welcome-text">您可以直接輸入問題，AI 助理將幫您查詢業績相關資料。例如：查詢特定商品銷售狀況、業務員業績排名、客戶訂單資訊等。</div>
         <div class="quick-btns">
-          <button class="quick-btn" onclick="sendQuick('2025年業績最好的商品是哪個？')">🏆 最佳商品</button>
+          <button class="quick-btn" onclick="sendQuick(`${new Date().getFullYear()}年業績最好的商品是哪個？`)">🏆 最佳商品</button>
           <button class="quick-btn" onclick="sendQuick('業務員業績排名如何？')">📊 業績排名</button>
           <button class="quick-btn" onclick="sendQuick('本月總銷售金額是多少？')">💰 本月業績</button>
           <button class="quick-btn" onclick="sendQuick('我可以查詢哪些資料？')">❓ 使用說明</button>
