@@ -437,6 +437,7 @@
         sessionStorage.setItem('auth_token', data.token);
         sessionStorage.setItem('auth_user', data.username);
         sessionStorage.setItem('auth_expires', data.expiresAt);
+        sessionStorage.setItem('auth_role', data.role);
         window.location.href = REDIRECT_URL;
       } else {
         errorText.textContent = data.message || '帳號或密碼錯誤，請重新輸入';
