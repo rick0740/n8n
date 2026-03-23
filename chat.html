@@ -460,7 +460,8 @@
         body: JSON.stringify({
           action: 'sendMessage',
           sessionId: sessionId,  // Token 當 sessionId，供 n8n 驗證
-          chatInput: msg
+          chatInput: msg,
+          role: sessionStorage.getItem('auth_role')
         })
       });
       const data = await res.json();
