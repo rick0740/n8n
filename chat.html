@@ -3,73 +3,275 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SYNMOSA 健喬信元 — 業績查詢</title>
+  <title>SYNMOSA 健喬信元 — 智能分析平台</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    /* 這裡完整保留您原有的 CSS 樣式 */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #f0f2f5; --sidebar: #ffffff; --border: #e2e8f0; --accent: #0077b6;
-      --accent-lt: #e6f3fb; --accent-2: #00b4d8; --text: #1a202c; --text-mid: #4a5568;
-      --text-dim: #a0aec0; --bubble-ai: #f7f9fc; --bubble-usr: #0077b6;
-      --success: #38a169; --danger: #e53e3e; --radius: 12px;
+      --bg:         #f0f2f5;
+      --sidebar:    #ffffff;
+      --border:     #e2e8f0;
+      --accent:     #0077b6;
+      --accent-lt:  #e6f3fb;
+      --accent-2:   #00b4d8;
+      --text:       #1a202c;
+      --text-mid:   #4a5568;
+      --text-dim:   #a0aec0;
+      --bubble-ai:  #f7f9fc;
+      --bubble-usr: #0077b6;
+      --success:    #38a169;
+      --danger:     #e53e3e;
+      --radius:     12px;
     }
+
     html, body { height: 100%; font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+
     .layout { display: grid; grid-template-columns: 260px 1fr; height: 100vh; }
-    .sidebar { background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; height: 100vh; }
+
+    .sidebar {
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; height: 100vh;
+    }
+
     .sidebar-header { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); }
+
     .brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-    .brand-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 500; flex-shrink: 0; }
+
+    .brand-icon {
+      width: 32px; height: 32px;
+      background: var(--accent); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-family: 'JetBrains Mono', monospace;
+      font-size: 14px; font-weight: 500; flex-shrink: 0;
+    }
+
     .brand-name { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: 0.05em; }
     .brand-sub { font-size: 11px; color: var(--text-dim); margin-left: 42px; }
-    .user-card { margin: 16px 20px; background: var(--accent-lt); border: 1px solid rgba(0,119,182,0.15); border-radius: var(--radius); padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
-    .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
+
+    .user-card {
+      margin: 16px 20px;
+      background: var(--accent-lt);
+      border: 1px solid rgba(0,119,182,0.15);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .user-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; flex-shrink: 0;
+    }
+
     .user-name { font-size: 13px; font-weight: 500; color: var(--accent); }
     .user-role { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+
     .sidebar-nav { flex: 1; padding: 8px 12px; overflow-y: auto; }
-    .nav-section-label { font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 8px 6px; }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--text-mid); transition: background 0.15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; }
+
+    .nav-section-label {
+      font-size: 10px; font-weight: 600; color: var(--text-dim);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 12px 8px 6px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px;
+      cursor: pointer; font-size: 13px; color: var(--text-mid);
+      transition: background 0.15s, color 0.15s;
+      margin-bottom: 2px; border: none; background: none;
+      width: 100%; text-align: left;
+    }
     .nav-item:hover { background: var(--bg); color: var(--text); }
     .nav-item.active { background: var(--accent-lt); color: var(--accent); font-weight: 500; }
+
     .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.7; }
-    .nav-badge { margin-left: auto; background: var(--accent); color: #fff; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; }
+    .nav-item.active .nav-icon { opacity: 1; }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--accent); color: #fff;
+      font-size: 10px; padding: 2px 7px;
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
     .sidebar-footer { padding: 12px; border-top: 1px solid var(--border); }
-    .btn-logout { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: none; color: var(--text-mid); font-size: 13px; cursor: pointer; transition: background 0.15s; }
+
+    .btn-logout {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: none; color: var(--text-mid);
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 13px; cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
     .btn-logout:hover { background: #fff5f5; color: var(--danger); border-color: rgba(229,62,62,0.3); }
-    .main { display: flex; flex-direction: column; height: 100vh; background: #fff; }
-    .main-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+
+    /* 主要內容區切換 */
+    .main { display: flex; flex-direction: column; height: 100vh; background: #fff; overflow: hidden; }
+    .view-pane { display: none; flex-direction: column; height: 100%; overflow: auto; }
+    .view-pane.active-pane { display: flex; }
+
+    /* 通用header */
+    .main-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
     .header-title { font-size: 16px; font-weight: 600; color: var(--text); }
     .header-sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-    .status-pill { display: flex; align-items: center; gap: 6px; background: #f0fff4; border: 1px solid rgba(56,161,105,0.2); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--success); font-weight: 500; }
-    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .status-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: #f0fff4;
+      border: 1px solid rgba(56,161,105,0.2);
+      border-radius: 20px; padding: 5px 12px;
+      font-size: 12px; color: var(--success); font-weight: 500;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%; background: var(--success);
+      animation: pulse 2s infinite;
+    }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .btn-clear {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: none;
+      color: var(--text-mid);
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 12px; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-clear:hover { background: var(--bg); color: var(--text); }
 
-    /* 這裡加入生技分析專用的「執行畫面」與「人性化等待」樣式，不影響原有佈局 */
-    .analysis-panel { display: none; flex: 1; padding: 40px 24px; flex-direction: column; align-items: center; overflow-y: auto; }
-    .analysis-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 32px; width: 100%; max-width: 500px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; }
-    .analysis-icon { font-size: 40px; margin-bottom: 16px; }
-    .analysis-input-group { margin: 20px 0; }
-    .analysis-input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; outline: none; transition: border-color 0.2s; }
-    .analysis-input:focus { border-color: var(--accent); }
-    .btn-execute { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-    .btn-execute:hover { background: #005f8a; }
-
-    /* 等待動畫樣式 */
-    .loading-state { display: none; flex-direction: column; align-items: center; width: 100%; margin-top: 20px; }
-    .progress-container { width: 100%; background: var(--bg); height: 8px; border-radius: 4px; margin: 15px 0; overflow: hidden; }
-    .progress-bar { width: 0%; height: 100%; background: var(--accent); transition: width 0.4s ease; }
-    .status-msg { font-size: 13px; color: var(--accent); font-weight: 500; min-height: 20px; }
-
-    /* 其他聊天樣式完整保留 */
-    .chat-area { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-    .welcome-card { background: linear-gradient(135deg, #e6f3fb, #f0f9ff); border: 1px solid rgba(0,119,182,0.15); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 8px; }
-    .msg-row { display: flex; gap: 10px; animation: msgIn 0.25s ease both; }
-    .msg-bubble { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.7; }
+    /* 業績查詢原有的對話區 */
+    .chat-area {
+      flex: 1; overflow-y: auto;
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .welcome-card {
+      background: linear-gradient(135deg, #e6f3fb, #f0f9ff);
+      border: 1px solid rgba(0,119,182,0.15);
+      border-radius: var(--radius);
+      padding: 20px 24px; margin-bottom: 8px;
+    }
+    .welcome-title { font-size: 16px; font-weight: 600; color: var(--accent); margin-bottom: 6px; }
+    .welcome-text { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+    .quick-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .quick-btn {
+      padding: 7px 14px;
+      background: #fff;
+      border: 1px solid rgba(0,119,182,0.2);
+      border-radius: 20px; font-size: 12px; color: var(--accent);
+      cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .quick-btn:hover { background: var(--accent-lt); border-color: var(--accent); }
+    .msg-row {
+      display: flex; gap: 10px;
+      animation: msgIn 0.25s ease both;
+    }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .msg-row.user { flex-direction: row-reverse; }
+    .msg-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; margin-top: 2px; }
+    .msg-avatar.ai { background: var(--accent-lt); color: var(--accent); border: 1px solid rgba(0,119,182,0.2); }
+    .msg-avatar.user { background: var(--accent); color: #fff; }
+    .msg-content { max-width: 70%; }
+    .msg-name { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; font-weight: 500; }
+    .msg-row.user .msg-name { text-align: right; }
+    .msg-bubble { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.7; word-break: break-word; }
     .msg-bubble.ai { background: var(--bubble-ai); border: 1px solid var(--border); color: var(--text); border-bottom-left-radius: 4px; }
     .msg-bubble.user { background: var(--bubble-usr); color: #fff; border-bottom-right-radius: 4px; }
+    .msg-time { font-size: 10px; color: var(--text-dim); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+    .typing-indicator { display: none; align-items: center; gap: 10px; }
+    .typing-indicator.show { display: flex; }
+    .typing-dots { display: flex; gap: 4px; background: var(--bubble-ai); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; border-bottom-left-radius: 4px; }
+    .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-dim); animation: typingBounce 1.2s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+
     .input-area { padding: 16px 24px; border-top: 1px solid var(--border); flex-shrink: 0; background: #fff; }
-    .input-row { display: flex; gap: 10px; align-items: flex-end; background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 14px; }
-    #chatInput { flex: 1; background: none; border: none; outline: none; font-size: 14px; resize: none; max-height: 120px; }
+    .input-row { display: flex; gap: 10px; align-items: flex-end; background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 14px; transition: border-color 0.2s; }
+    .input-row:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,119,182,0.08); }
+    #chatInput, #bioInput { flex: 1; background: none; border: none; outline: none; font-family: 'Noto Sans TC', sans-serif; font-size: 14px; color: var(--text); resize: none; line-height: 1.6; }
+    #chatInput::placeholder, #bioInput::placeholder { color: var(--text-dim); }
+    .btn-send {
+      width: 36px; height: 36px;
+      background: var(--accent); border: none; border-radius: 8px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background 0.15s, transform 0.1s;
+    }
+    .btn-send:hover { background: #005f8a; }
+    .btn-send:active { transform: scale(0.95); }
+    .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* 生技產業分析專屬樣式 */
+    .bio-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 32px 40px;
+      background: #fff;
+    }
+    .bio-stage {
+      max-width: 720px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    /* 階段一：輸入畫面 */
+    .input-view { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 24px; animation: fadeIn 0.3s ease; }
+    .bio-icon { font-size: 48px; background: #eef2ff; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 40px; margin-bottom: 8px; }
+    .bio-title { font-size: 28px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+    .bio-sub { color: var(--text-mid); font-size: 15px; max-width: 480px; margin-top: 4px; }
+    .bio-input-wrapper { width: 100%; margin-top: 16px; }
+    .bio-input {
+      width: 100%; padding: 16px 20px; font-size: 16px;
+      border: 1.5px solid var(--border); border-radius: 60px;
+      background: #fff; outline: none; transition: all 0.2s;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .bio-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,119,182,0.1); }
+    .btn-bio-primary {
+      background: var(--accent); color: #fff; border: none;
+      padding: 12px 32px; font-size: 16px; font-weight: 500;
+      border-radius: 40px; cursor: pointer; transition: background 0.2s;
+      margin-top: 12px; font-family: 'Noto Sans TC', sans-serif;
+    }
+    .btn-bio-primary:hover { background: #005f8a; }
+    .btn-bio-secondary {
+      background: transparent; border: 1px solid var(--border);
+      padding: 10px 28px; border-radius: 40px; color: var(--text-mid);
+      cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-bio-secondary:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+
+    /* 進度追蹤 */
+    .progress-view { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 28px; animation: fadeIn 0.3s ease; }
+    .progress-message { font-size: 18px; font-weight: 500; color: var(--accent); background: var(--accent-lt); padding: 8px 24px; border-radius: 40px; display: inline-block; }
+    .progress-bar-container { width: 100%; background: #e2e8f0; border-radius: 20px; height: 8px; overflow: hidden; margin: 8px 0; }
+    .progress-fill { width: 0%; height: 100%; background: var(--accent-2); border-radius: 20px; transition: width 0.2s linear; }
+    .status-text { font-size: 16px; color: var(--text-mid); min-height: 70px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .status-emoj { font-size: 22px; }
+
+    /* 完成視圖 */
+    .completion-view { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 24px; animation: fadeIn 0.3s ease; }
+    .check-circle { font-size: 72px; color: var(--success); }
+    .completion-text { font-size: 20px; font-weight: 500; color: var(--text); }
+    .completion-hint { color: var(--text-mid); font-size: 14px; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hidden-stage { display: none; }
   </style>
 </head>
 <body>
@@ -80,175 +282,200 @@
       <div class="brand-row"><div class="brand-icon">S</div><div class="brand-name">SYNMOSA</div></div>
       <div class="brand-sub">健喬信元醫藥集團</div>
     </div>
-    <div class="user-card">
-      <div class="user-avatar" id="userAvatar">--</div>
-      <div><div class="user-name" id="userName">載入中...</div><div class="user-role">內部員工</div></div>
-    </div>
+    <div class="user-card"><div class="user-avatar" id="userAvatar">--</div><div><div class="user-name" id="userName">載入中...</div><div class="user-role">內部員工</div></div></div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">工作區</div>
-      <button class="nav-item active" id="nav-sales" onclick="showMode('sales')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-        業績查詢 <span class="nav-badge" id="msgCount">0</span>
+      <button class="nav-item" data-pane="chatPane">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        業績查詢
+        <span class="nav-badge" id="msgCount">0</span>
       </button>
-
-      <button class="nav-item" id="nav-biotech" onclick="showMode('biotech')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-        </svg>
+      <button class="nav-item" data-pane="bioPane">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>
         泛生技產業分析
       </button>
-
       <div class="nav-section-label" style="margin-top:8px;">說明</div>
-      <button class="nav-item" onclick="sendQuick('我可以查詢哪些資料？')">使用說明</button>
+      <button class="nav-item" onclick="document.querySelector('[data-pane=\"chatPane\"]').click(); setTimeout(()=>sendQuickInChat('我可以查詢哪些資料？'), 100);">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        使用說明
+      </button>
     </nav>
-    <div class="sidebar-footer">
-      <button class="btn-logout" onclick="logout()">登出系統</button>
-    </div>
+    <div class="sidebar-footer"><button class="btn-logout" onclick="logout()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>登出系統</button></div>
   </aside>
 
   <main class="main">
-    <header class="main-header">
-      <div>
-        <div class="header-title" id="headerTitle">業績查詢助理</div>
-        <div class="header-sub" id="headerSub">AI 智能查詢 · 即時回應</div>
-      </div>
-      <div class="header-right">
-        <div class="status-pill"><div class="status-dot"></div>AI 服務正常</div>
-      </div>
-    </header>
-
-    <div id="sales-view" style="display: flex; flex-direction: column; flex: 1;">
+    <!-- 業績查詢 Pane -->
+    <div id="chatPane" class="view-pane">
+      <header class="main-header">
+        <div><div class="header-title">業績查詢助理</div><div class="header-sub">AI 智能查詢 · 即時回應</div></div>
+        <div class="header-right"><div class="status-pill"><div class="status-dot"></div>AI 服務正常</div><button class="btn-clear" onclick="clearChat()">清除對話</button></div>
+      </header>
       <div class="chat-area" id="chatArea">
-        <div class="welcome-card">
-          <div class="welcome-title" id="welcomeTitle">👋 您好，歡迎使用系統</div>
-          <div class="welcome-text">您可以輸入問題，查詢商品銷售狀況、業務員排名等。</div>
+        <div class="welcome-card"><div class="welcome-title" id="welcomeTitle">👋 您好，歡迎使用業績查詢系統</div><div class="welcome-text">您可以直接輸入問題，AI 助理將幫您查詢業績相關資料。例如：查詢特定商品銷售狀況、業務員業績排名、客戶訂單資訊等。</div>
+        <div class="quick-btns"><button class="quick-btn" onclick="sendQuickInChat(`${new Date().getFullYear()}年業績最好的商品是哪個？`)">🏆 最佳商品</button><button class="quick-btn" onclick="sendQuickInChat('業務員業績排名如何？')">📊 業績排名</button><button class="quick-btn" onclick="sendQuickInChat('本月總銷售金額是多少？')">💰 本月業績</button><button class="quick-btn" onclick="sendQuickInChat('我可以查詢哪些資料？')">❓ 使用說明</button></div>
         </div>
-        <div class="typing-indicator" id="typingIndicator" style="display:none;">AI 正在思考中...</div>
+        <div class="typing-indicator" id="typingIndicator"><div class="msg-avatar ai">AI</div><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>
       </div>
-      <div class="input-area">
-        <div class="input-row">
-          <textarea id="chatInput" placeholder="輸入您的問題..." rows="1"></textarea>
-          <button class="btn-send" id="sendBtn" onclick="sendMessage()">送出</button>
-        </div>
-      </div>
+      <div class="input-area"><div class="input-row"><textarea id="chatInput" placeholder="輸入您的問題，例如：2025年銷售最好的商品是？" rows="1"></textarea><button class="btn-send" id="sendBtn" onclick="sendChatMessage()"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg></button></div><div class="input-hint">按 Enter 送出，Shift+Enter 換行</div></div>
     </div>
 
-    <div id="biotech-view" class="analysis-panel">
-      <div class="analysis-card" id="analysisCard">
-        <div class="analysis-icon">🔍</div>
-        <h2 style="font-size: 18px; color: var(--text); margin-bottom: 8px;">泛生技產業分析發送</h2>
-        <p style="font-size: 13px; color: var(--text-mid);">輸入您感興趣的關鍵字，AI 將彙整分析報告並自動寄送到您的 Gmail。</p>
-        
-        <div class="analysis-input-group">
-          <input type="text" id="biotechKeyword" class="analysis-input" placeholder="例如：新藥開發趨勢、生技產業規模...">
-        </div>
-        
-        <button class="btn-execute" id="executeBtn" onclick="runBiotechWorkflow()">開始分析並寄送郵件</button>
-
-        <div class="loading-state" id="loadingState">
-          <div class="status-msg" id="statusMsg">初始化系統中...</div>
-          <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
-          <p style="font-size: 11px; color: var(--text-dim);">分析過程約需 1-2 分鐘，請勿關閉網頁</p>
-        </div>
-
-        <div id="completeMsg" style="display:none; color: var(--success); font-weight: 500; margin-top: 15px;">
-          ✅ 任務已啟動！請留意信箱。
-        </div>
+    <!-- 泛生技產業分析 Pane (全新設計) -->
+    <div id="bioPane" class="view-pane">
+      <header class="main-header">
+        <div><div class="header-title">🔬 泛生技產業深度分析系統</div><div class="header-sub">AI 智能查詢 · 即時寄送報告</div></div>
+        <div class="header-right"><div class="status-pill"><div class="status-dot"></div>分析引擎就緒</div></div>
+      </header>
+      <div class="bio-container" id="bioContainer">
+        <!-- 動態渲染三階段 -->
+        <div class="bio-stage" id="bioStage"></div>
       </div>
     </div>
   </main>
 </div>
 
 <script>
-  const N8N_CHAT_URL = 'https://rick0740-n8n-free.hf.space/webhook/3335c50c-f72c-4cbe-8554-7e397390ba38/chat';
-  const BIOTECH_WEBHOOK = 'https://rick0740-n8n-free.hf.space/webhook/biotech-analysis'; // 需 Publish 後的網址
-
-  // 模式切換邏輯 (Sales vs Biotech)
-  function showMode(mode) {
-    const salesView = document.getElementById('sales-view');
-    const biotechView = document.getElementById('biotech-view');
-    const headerTitle = document.getElementById('headerTitle');
-    const navSales = document.getElementById('nav-sales');
-    const navBiotech = document.getElementById('nav-biotech');
-
-    if (mode === 'biotech') {
-      salesView.style.display = 'none';
-      biotechView.style.display = 'flex';
-      headerTitle.textContent = '泛生技產業分析';
-      navSales.classList.remove('active');
-      navBiotech.classList.add('active');
-    } else {
-      salesView.style.display = 'flex';
-      biotechView.style.display = 'none';
-      headerTitle.textContent = '業績查詢助理';
-      navSales.classList.add('active');
-      navBiotech.classList.remove('active');
-    }
+  // ---------- 全域驗證 & 共用 ----------
+  const token = sessionStorage.getItem('auth_token');
+  const username = sessionStorage.getItem('auth_user');
+  const expires = sessionStorage.getItem('auth_expires');
+  if (!token || !expires || new Date(expires) < new Date()) window.location.href = 'https://rick0740.github.io/n8n/';
+  if (username) {
+    document.getElementById('userName').textContent = username;
+    document.getElementById('userAvatar').textContent = username.slice(0, 2).toUpperCase();
+    document.getElementById('welcomeTitle').textContent = `👋 ${username}，歡迎使用業績查詢系統`;
   }
+  const sessionId = token;
 
-  // 泛生技產業分析執行與等待邏輯
-  async function runBiotechWorkflow() {
-    const keyword = document.getElementById('biotechKeyword').value.trim();
-    if (!keyword) return alert("請輸入分析關鍵字");
-
-    const loadingState = document.getElementById('loadingState');
-    const executeBtn = document.getElementById('executeBtn');
-    const statusMsg = document.getElementById('statusMsg');
-    const progressBar = document.getElementById('progressBar');
-    const completeMsg = document.getElementById('completeMsg');
-
-    executeBtn.disabled = true;
-    loadingState.style.display = 'flex';
-    completeMsg.style.display = 'none';
-
-    // 模擬人性化等待進度
-    const steps = [
-      { text: "🔍 正在搜尋 Tavily 生技資料庫...", progress: "25%" },
-      { text: "🌐 正在擷取 Jina.ai 網頁深度內容...", progress: "50%" },
-      { text: "🧠 AI 正在進行產業結構化摘要...", progress: "75%" },
-      { text: "✉️ 正在產生分析報告並準備郵件...", progress: "90%" }
-    ];
-
-    let stepIdx = 0;
-    const interval = setInterval(() => {
-      if (stepIdx < steps.length) {
-        statusMsg.textContent = steps[stepIdx].text;
-        progressBar.style.width = steps[stepIdx].progress;
-        stepIdx++;
-      }
-    }, 4500);
-
+  // ---------- 業績查詢邏輯 (保留原始邏輯，微調函數避免衝突) ----------
+  let msgCount = 0, isLoadingChat = false;
+  const chatArea = document.getElementById('chatArea');
+  const typingIndicator = document.getElementById('typingIndicator');
+  const chatInput = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('sendBtn');
+  function getTime() { const now = new Date(); return `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`; }
+  function addMessage(content, type) {
+    const row = document.createElement('div'); row.className = `msg-row ${type}`;
+    const avatarText = type === 'user' ? (username || 'U').slice(0,2).toUpperCase() : 'AI';
+    const nameText = type === 'user' ? (username || '員工') : 'AI 助理';
+    row.innerHTML = `<div class="msg-avatar ${type}">${avatarText}</div><div class="msg-content"><div class="msg-name">${nameText}</div><div class="msg-bubble ${type}">${content.replace(/\n/g, '<br>')}</div><div class="msg-time">${getTime()}</div></div>`;
+    chatArea.insertBefore(row, typingIndicator);
+    chatArea.scrollTop = chatArea.scrollHeight;
+    if (type === 'user') { msgCount++; document.getElementById('msgCount').textContent = msgCount; }
+  }
+  function setTyping(show) { typingIndicator.classList.toggle('show', show); chatArea.scrollTop = chatArea.scrollHeight; }
+  async function sendChatMessage() { 
+    const msg = chatInput.value.trim(); if (!msg || isLoadingChat) return;
+    chatInput.value = ''; chatInput.style.height = 'auto'; isLoadingChat = true; sendBtn.disabled = true;
+    addMessage(msg, 'user'); setTyping(true);
     try {
-      const res = await fetch(BIOTECH_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ keyword: keyword })
+      const res = await fetch('https://rick0740-n8n-free.hf.space/webhook/3335c50c-f72c-4cbe-8554-7e397390ba38/chat', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'sendMessage', sessionId: sessionId, chatInput: msg, role: sessionStorage.getItem('auth_role') })
       });
-      
-      clearInterval(interval);
-      if (res.ok) {
-        progressBar.style.width = "100%";
-        statusMsg.textContent = "任務完成！報告已發送。";
-        completeMsg.style.display = 'block';
-        setTimeout(() => { loadingState.style.display = 'none'; executeBtn.disabled = false; }, 3000);
-      }
-    } catch (err) {
-      clearInterval(interval);
-      alert("連線失敗，請稍後再試。");
-      executeBtn.disabled = false;
-      loadingState.style.display = 'none';
+      const data = await res.json();
+      setTyping(false);
+      const reply = data.output || data.text || data.message || '抱歉，無法取得回應，請稍後再試。';
+      addMessage(reply, 'ai');
+    } catch (err) { setTyping(false); addMessage('連線失敗，請確認網路後再試。', 'ai'); } 
+    finally { isLoadingChat = false; sendBtn.disabled = false; chatInput.focus(); }
+  }
+  function sendQuickInChat(msg) { chatInput.value = msg; sendChatMessage(); }
+  function clearChat() { if(!confirm('確定要清除所有對話紀錄嗎？')) return; Array.from(chatArea.children).forEach(el => { if(el !== typingIndicator && !el.classList?.contains('welcome-card')) el.remove(); }); msgCount = 0; document.getElementById('msgCount').textContent = 0; }
+  chatInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); } });
+  chatInput.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px'; });
+
+  // ---------- 頁面切換 (保留原始 active 樣式) ----------
+  function switchPane(paneId) {
+    document.querySelectorAll('.view-pane').forEach(p => p.classList.remove('active-pane'));
+    document.getElementById(paneId).classList.add('active-pane');
+    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.nav-item[data-pane="${paneId}"]`).classList.add('active');
+    if (paneId === 'bioPane') { renderBioInitial(); }
+  }
+  document.querySelectorAll('.nav-item[data-pane]').forEach(btn => btn.addEventListener('click', (e) => { switchPane(btn.getAttribute('data-pane')); }));
+  // 預設顯示 chatPane
+  switchPane('chatPane');
+
+  // ========== 泛生技產業分析模組 (三階段，虛擬進度+API模擬，保留原n8n webhook風格) ==========
+  let bioCurrentState = 'input'; // input, progress, completion
+  let progressInterval = null;
+  let currentProgress = 0;
+  const N8N_ANALYSIS_WEBHOOK = 'https://rick0740-n8n-free.hf.space/webhook/3335c50c-f72c-4cbe-8554-7e397390ba38/bio-analysis'; // 模擬實際API（沿用既有endpoint但區分action）
+  let bioKeyword = '';
+
+  function renderBioInitial() { renderBioStage(); }
+
+  function renderBioStage() {
+    const container = document.getElementById('bioStage');
+    if (!container) return;
+    if (bioCurrentState === 'input') {
+      container.innerHTML = `
+        <div class="input-view">
+          <div class="bio-icon">🔬</div>
+          <div class="bio-title">泛生技產業深度分析系統</div>
+          <div class="bio-sub">輸入公司名稱或產業關鍵字，AI將整合Tavily、Jina.ai等資料源，產出完整分析報告並寄送至您的Gmail</div>
+          <div class="bio-input-wrapper">
+            <input type="text" id="bioKeywordInput" class="bio-input" placeholder="請輸入公司名稱或產業關鍵字（如：健喬信元、生技製藥、CDMO）" value="${bioKeyword.replace(/"/g, '&quot;')}">
+          </div>
+          <button id="startAnalysisBtn" class="btn-bio-primary">🚀 開始分析並寄送郵件</button>
+          <div style="font-size:12px; color:var(--text-dim); margin-top:12px;">系統將自動生成報告，約需30~60秒，請稍候</div>
+        </div>
+      `;
+      document.getElementById('startAnalysisBtn')?.addEventListener('click', () => {
+        const kw = document.getElementById('bioKeywordInput').value.trim();
+        if (!kw) { alert('請輸入關鍵字'); return; }
+        bioKeyword = kw;
+        bioCurrentState = 'progress';
+        startProgressSimulation();
+        renderBioStage();
+        triggerBioAnalysis(kw);
+      });
+      const inputEl = document.getElementById('bioKeywordInput');
+      if(inputEl) inputEl.addEventListener('keypress', (e) => { if(e.key === 'Enter') document.getElementById('startAnalysisBtn')?.click(); });
+    } 
+    else if (bioCurrentState === 'progress') {
+      container.innerHTML = `
+        <div class="progress-view">
+          <div class="progress-message">⏳ 分析任務進行中</div>
+          <div class="progress-bar-container"><div class="progress-fill" id="progressFill" style="width: ${currentProgress}%;"></div></div>
+          <div class="status-text" id="statusMessage">🔍 正在連線 Tavily 全球生技資料庫...</div>
+          <div style="margin-top: 20px;"><button id="cancelProgressBtn" class="btn-bio-secondary">取消任務</button></div>
+        </div>
+      `;
+      document.getElementById('cancelProgressBtn')?.addEventListener('click', () => { resetBioToInput(); if(progressInterval) clearInterval(progressInterval); });
+    } 
+    else if (bioCurrentState === 'completion') {
+      container.innerHTML = `
+        <div class="completion-view">
+          <div class="check-circle">✅</div>
+          <div class="completion-text">分析任務已順利完成！</div>
+          <div class="completion-hint">請至您的電子信箱（Gmail）查看詳細報告。</div>
+          <button id="backToInputBtn" class="btn-bio-secondary">← 返回查詢</button>
+        </div>
+      `;
+      document.getElementById('backToInputBtn')?.addEventListener('click', () => { resetBioToInput(); });
     }
   }
 
-  // 以下保留您原本的所有 JS 邏輯 (驗證, sendMessage, logout 等)
-  const username = sessionStorage.getItem('auth_user') || "rick0740";
-  document.getElementById('userName').textContent = username;
-  document.getElementById('userAvatar').textContent = username.slice(0, 2).toUpperCase();
-  
-  function sendMessage() { /* 原有邏輯 */ }
-  function logout() { /* 原有邏輯 */ }
-</script>
-</body>
-</html>
+  function resetBioToInput() {
+    if(progressInterval) clearInterval(progressInterval);
+    bioCurrentState = 'input';
+    currentProgress = 0;
+    renderBioStage();
+  }
+
+  function startProgressSimulation() {
+    if(progressInterval) clearInterval(progressInterval);
+    currentProgress = 0;
+    const statusMessages = [
+      "🔍 正在連線 Tavily 全球生技資料庫...",
+      "🌐 正在由 Jina.ai 擷取網頁深度內容...",
+      "🧠 正在由AI進行產業結構化摘要...",
+      "✉️ 正在彙整報告並發送電子郵件..."
+    ];
+    let step = 0;
+    const updateStatus = () => {
+      const msgDiv = document.getElementById('statusMessage');
+      if(msgDiv && step < statusMessages.length) msgDiv.innerHTML = statusMessages[step];
+    };
+    progressInterval = setInterval(()
