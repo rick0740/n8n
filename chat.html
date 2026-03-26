@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SYNMOSA 健喬信元 — 內部系統</title>
+  <title>SYNMOSA 健喬信元 — 業績查詢</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,12 +34,10 @@
     .brand-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 500; flex-shrink: 0; }
     .brand-name { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: 0.05em; }
     .brand-sub { font-size: 11px; color: var(--text-dim); margin-left: 42px; }
-
     .user-card { margin: 16px 20px; background: var(--accent-lt); border: 1px solid rgba(0,119,182,0.15); border-radius: var(--radius); padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
     .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0; }
     .user-name { font-size: 13px; font-weight: 500; color: var(--accent); }
     .user-role { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
-
     .sidebar-nav { flex: 1; padding: 8px 12px; overflow-y: auto; }
     .nav-section-label { font-size: 10px; font-weight: 600; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 8px 6px; }
     .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--text-mid); transition: background 0.15s, color 0.15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; }
@@ -48,7 +46,6 @@
     .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.7; }
     .nav-item.active .nav-icon { opacity: 1; }
     .nav-badge { margin-left: auto; background: var(--accent); color: #fff; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-family: 'JetBrains Mono', monospace; }
-
     .sidebar-footer { padding: 12px; border-top: 1px solid var(--border); }
     .btn-logout { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: none; color: var(--text-mid); font-family: 'Noto Sans TC', sans-serif; font-size: 13px; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
     .btn-logout:hover { background: #fff5f5; color: var(--danger); border-color: rgba(229,62,62,0.3); }
@@ -65,21 +62,21 @@
     .btn-clear { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: none; color: var(--text-mid); font-family: 'Noto Sans TC', sans-serif; font-size: 12px; cursor: pointer; transition: background 0.15s, color 0.15s; }
     .btn-clear:hover { background: var(--bg); color: var(--text); }
 
-    /* ── Chat View ── */
+    /* ── View 切換 ── */
     .view { display: none; flex-direction: column; flex: 1; overflow: hidden; }
     .view.active { display: flex; }
 
+    /* ── 業績查詢 View ── */
     .chat-area { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
     .chat-area::-webkit-scrollbar { width: 4px; }
+    .chat-area::-webkit-scrollbar-track { background: transparent; }
     .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
     .welcome-card { background: linear-gradient(135deg, #e6f3fb, #f0f9ff); border: 1px solid rgba(0,119,182,0.15); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 8px; }
     .welcome-title { font-size: 16px; font-weight: 600; color: var(--accent); margin-bottom: 6px; }
     .welcome-text { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
     .quick-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-    .quick-btn { padding: 7px 14px; background: #fff; border: 1px solid rgba(0,119,182,0.2); border-radius: 20px; font-size: 12px; color: var(--accent); cursor: pointer; font-family: 'Noto Sans TC', sans-serif; transition: background 0.15s; }
-    .quick-btn:hover { background: var(--accent-lt); }
-
+    .quick-btn { padding: 7px 14px; background: #fff; border: 1px solid rgba(0,119,182,0.2); border-radius: 20px; font-size: 12px; color: var(--accent); cursor: pointer; font-family: 'Noto Sans TC', sans-serif; transition: background 0.15s, border-color 0.15s; }
+    .quick-btn:hover { background: var(--accent-lt); border-color: var(--accent); }
     .msg-row { display: flex; gap: 10px; animation: msgIn 0.25s ease both; }
     @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .msg-row.user { flex-direction: row-reverse; }
@@ -94,7 +91,6 @@
     .msg-bubble.user { background: var(--bubble-usr); color: #fff; border-bottom-right-radius: 4px; }
     .msg-time { font-size: 10px; color: var(--text-dim); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
     .msg-row.user .msg-time { text-align: right; }
-
     .typing-indicator { display: none; align-items: center; gap: 10px; }
     .typing-indicator.show { display: flex; }
     .typing-dots { display: flex; gap: 4px; background: var(--bubble-ai); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; border-bottom-left-radius: 4px; }
@@ -102,7 +98,6 @@
     .typing-dot:nth-child(2) { animation-delay: 0.2s; }
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes typingBounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
-
     .input-area { padding: 16px 24px; border-top: 1px solid var(--border); flex-shrink: 0; background: #fff; }
     .input-row { display: flex; gap: 10px; align-items: flex-end; background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 14px; transition: border-color 0.2s, box-shadow 0.2s; }
     .input-row:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,119,182,0.08); }
@@ -110,64 +105,55 @@
     #chatInput::placeholder { color: var(--text-dim); }
     .btn-send { width: 36px; height: 36px; background: var(--accent); border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, transform 0.1s; }
     .btn-send:hover { background: #005f8a; }
+    .btn-send:active { transform: scale(0.95); }
     .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-send svg { width: 16px; height: 16px; fill: #fff; }
     .input-hint { font-size: 11px; color: var(--text-dim); margin-top: 8px; text-align: center; }
 
-    /* ── Biotech View ── */
-    .biotech-view { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; overflow-y: auto; }
+    /* ── 泛生技分析 View ── */
+    .biotech-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; overflow-y: auto; }
 
-    /* Stage 1: Input */
-    .bt-stage { display: none; width: 100%; max-width: 560px; }
-    .bt-stage.active { display: block; animation: fadeUp 0.3s ease both; }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .bt-stage { display: none; width: 100%; max-width: 520px; animation: fadeUp 0.35s cubic-bezier(0.16,1,0.3,1) both; }
+    .bt-stage.active { display: block; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    .bt-input-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
-    .bt-icon { width: 56px; height: 56px; background: var(--accent-lt); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 26px; }
-    .bt-title { font-size: 20px; font-weight: 600; color: var(--text); text-align: center; margin-bottom: 8px; }
-    .bt-desc { font-size: 13px; color: var(--text-mid); text-align: center; line-height: 1.6; margin-bottom: 28px; }
-
-    .bt-input-wrap { position: relative; margin-bottom: 16px; }
-    .bt-input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Noto Sans TC', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: var(--bg); }
+    /* Stage 1 */
+    .bt-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 40px 36px; box-shadow: 0 4px 32px rgba(0,0,0,0.07); }
+    .bt-emoji { font-size: 48px; text-align: center; margin-bottom: 16px; line-height: 1; }
+    .bt-title { font-size: 20px; font-weight: 600; color: var(--text); text-align: center; margin-bottom: 8px; letter-spacing: -0.2px; }
+    .bt-desc { font-size: 13px; color: var(--text-mid); text-align: center; line-height: 1.7; margin-bottom: 28px; }
+    .bt-input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Noto Sans TC', sans-serif; font-size: 14px; color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: var(--bg); margin-bottom: 14px; }
     .bt-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,119,182,0.08); background: #fff; }
-    .bt-input::placeholder { color: var(--text-dim); }
-
+    .bt-input::placeholder { color: var(--text-dim); font-size: 13px; }
     .bt-btn { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: 10px; color: #fff; font-family: 'Noto Sans TC', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.15s, transform 0.1s, box-shadow 0.2s; }
-    .bt-btn:hover { background: #005f8a; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,119,182,0.3); }
-    .bt-btn:active { transform: translateY(0); }
-    .bt-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .bt-btn:hover:not(:disabled) { background: #005f8a; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,119,182,0.3); }
+    .bt-btn:active:not(:disabled) { transform: translateY(0); }
+    .bt-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Stage 2: Loading */
-    .bt-loading-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
-    .bt-spinner-wrap { display: flex; justify-content: center; margin-bottom: 28px; }
-    .bt-spinner { width: 56px; height: 56px; border: 3px solid var(--accent-lt); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    /* Stage 2 - Loading */
+    .bt-spinner-wrap { display: flex; justify-content: center; margin-bottom: 24px; }
+    .bt-spinner { width: 52px; height: 52px; border: 3px solid var(--accent-lt); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.75s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .bt-status-text { font-size: 15px; font-weight: 500; color: var(--accent); text-align: center; margin-bottom: 20px; min-height: 28px; transition: opacity 0.3s; }
-
-    .bt-progress-wrap { background: var(--bg); border-radius: 8px; height: 8px; overflow: hidden; margin-bottom: 12px; }
-    .bt-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), #00b4d8); border-radius: 8px; transition: width 0.8s ease; width: 0%; }
-
-    .bt-progress-label { font-size: 11px; color: var(--text-dim); text-align: right; font-family: 'JetBrains Mono', monospace; }
-
-    .bt-steps { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
-    .bt-step { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-dim); transition: color 0.3s; }
+    .bt-status { font-size: 15px; font-weight: 500; color: var(--accent); text-align: center; margin-bottom: 20px; min-height: 26px; transition: opacity 0.4s; }
+    .bt-prog-wrap { background: var(--bg); border-radius: 999px; height: 8px; overflow: hidden; margin-bottom: 8px; }
+    .bt-prog-bar { height: 100%; background: linear-gradient(90deg, var(--accent), #00b4d8); border-radius: 999px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+    .bt-prog-pct { font-size: 11px; color: var(--text-dim); text-align: right; font-family: 'JetBrains Mono', monospace; margin-bottom: 24px; }
+    .bt-steps { display: flex; flex-direction: column; gap: 10px; }
+    .bt-step { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-dim); padding: 8px 12px; border-radius: 8px; transition: background 0.3s, color 0.3s; }
+    .bt-step.active { background: var(--accent-lt); color: var(--accent); font-weight: 500; }
     .bt-step.done { color: var(--success); }
-    .bt-step.active { color: var(--accent); font-weight: 500; }
-    .bt-step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: background 0.3s; }
-    .bt-step.done .bt-step-dot { background: var(--success); }
-    .bt-step.active .bt-step-dot { background: var(--accent); animation: pulse 1s infinite; }
+    .bt-step-icon { width: 20px; text-align: center; flex-shrink: 0; font-size: 14px; }
 
-    /* Stage 3: Complete */
-    .bt-complete-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); text-align: center; }
-    .bt-check { width: 72px; height: 72px; background: #f0fff4; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 36px; animation: checkPop 0.5s cubic-bezier(0.16,1,0.3,1) both; }
-    @keyframes checkPop { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
-    .bt-complete-title { font-size: 20px; font-weight: 600; color: var(--success); margin-bottom: 10px; }
-    .bt-complete-desc { font-size: 13px; color: var(--text-mid); line-height: 1.6; margin-bottom: 28px; }
-    .bt-query-label { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; font-family: 'JetBrains Mono', monospace; }
-    .bt-query-value { font-size: 14px; font-weight: 500; color: var(--accent); background: var(--accent-lt); padding: 8px 16px; border-radius: 8px; display: inline-block; margin-bottom: 28px; }
-    .bt-back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border: 1.5px solid var(--accent); border-radius: 10px; background: none; color: var(--accent); font-family: 'Noto Sans TC', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s, color 0.15s; }
-    .bt-back-btn:hover { background: var(--accent); color: #fff; }
+    /* Stage 3 - Complete */
+    .bt-check-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
+    .bt-check { width: 72px; height: 72px; background: #f0fff4; border: 2px solid rgba(56,161,105,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; animation: popIn 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
+    .bt-complete-title { font-size: 20px; font-weight: 600; color: var(--success); text-align: center; margin-bottom: 10px; }
+    .bt-complete-desc { font-size: 13px; color: var(--text-mid); text-align: center; line-height: 1.7; margin-bottom: 24px; }
+    .bt-topic-label { font-size: 11px; color: var(--text-dim); text-align: center; margin-bottom: 6px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
+    .bt-topic-value { font-size: 14px; font-weight: 500; color: var(--accent); background: var(--accent-lt); padding: 8px 20px; border-radius: 8px; text-align: center; display: inline-block; width: 100%; margin-bottom: 28px; }
+    .bt-back-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 13px; border: 1.5px solid var(--border); border-radius: 10px; background: none; color: var(--text-mid); font-family: 'Noto Sans TC', sans-serif; font-size: 14px; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+    .bt-back-btn:hover { background: var(--accent-lt); color: var(--accent); border-color: var(--accent); }
   </style>
 </head>
 <body>
@@ -251,12 +237,12 @@
       </div>
     </header>
 
-    <!-- 業績查詢 View -->
+    <!-- ── 業績查詢 View ── -->
     <div class="view active" id="view-sales">
       <div class="chat-area" id="chatArea">
         <div class="welcome-card">
           <div class="welcome-title" id="welcomeTitle">👋 您好，歡迎使用業績查詢系統</div>
-          <div class="welcome-text">您可以直接輸入問題，AI 助理將幫您查詢業績相關資料。</div>
+          <div class="welcome-text">您可以直接輸入問題，AI 助理將幫您查詢業績相關資料。例如：查詢特定商品銷售狀況、業務員業績排名、客戶訂單資訊等。</div>
           <div class="quick-btns">
             <button class="quick-btn" onclick="sendQuick(`${new Date().getFullYear()}年業績最好的商品是哪個？`)">🏆 最佳商品</button>
             <button class="quick-btn" onclick="sendQuick('業務員業績排名如何？')">📊 業績排名</button>
@@ -284,68 +270,67 @@
       </div>
     </div>
 
-    <!-- 泛生技產業分析 View -->
+    <!-- ── 泛生技產業分析 View ── -->
     <div class="view" id="view-biotech">
-      <div class="biotech-view">
+      <div class="biotech-container">
 
-        <!-- Stage 1: Input -->
-        <div class="bt-stage active" id="bt-stage-1">
-          <div class="bt-input-card">
-            <div class="bt-icon">🔬</div>
-            <div class="bt-title">泛生技產業深度分析系統</div>
-            <div class="bt-desc">輸入公司名稱或產業關鍵字，AI 將蒐集全球資料、進行深度分析，並自動將完整報告寄送至您的 Gmail。</div>
-            <div class="bt-input-wrap">
-              <input class="bt-input" id="btInput" type="text"
-                placeholder="請輸入公司名稱或產業關鍵字（如：健喬信元、台灣生技產業）" />
-            </div>
-            <button class="bt-btn" id="btStartBtn" onclick="startBiotechAnalysis()">
-              開始分析並寄送報告
+        <!-- Stage 1：輸入 -->
+        <div class="bt-stage active" id="bt-s1">
+          <div class="bt-card">
+            <div class="bt-emoji">🧬</div>
+            <div class="bt-title">泛生技產業整合分析</div>
+            <div class="bt-desc">輸入關鍵字，AI 將搜尋最新生技資訊<br>並寄送詳細報告至您的信箱。</div>
+            <input class="bt-input" id="btInput" type="text"
+              placeholder="請輸入分析主題，如：台灣新藥研發趨勢" />
+            <button class="bt-btn" id="btStartBtn" onclick="startAnalysis()">
+              啟動分析並寄送郵件
             </button>
           </div>
         </div>
 
-        <!-- Stage 2: Loading -->
-        <div class="bt-stage" id="bt-stage-2">
-          <div class="bt-loading-card">
+        <!-- Stage 2：進度 -->
+        <div class="bt-stage" id="bt-s2">
+          <div class="bt-card">
             <div class="bt-spinner-wrap">
               <div class="bt-spinner"></div>
             </div>
-            <div class="bt-status-text" id="btStatusText">🔍 正在連線全球生技資料庫...</div>
-            <div class="bt-progress-wrap">
-              <div class="bt-progress-bar" id="btProgressBar"></div>
+            <div class="bt-status" id="btStatus">🔍 正在連線全球生技資料庫...</div>
+            <div class="bt-prog-wrap">
+              <div class="bt-prog-bar" id="btProgBar"></div>
             </div>
-            <div class="bt-progress-label" id="btProgressLabel">0%</div>
+            <div class="bt-prog-pct" id="btProgPct">0%</div>
             <div class="bt-steps">
-              <div class="bt-step active" id="bt-step-1">
-                <div class="bt-step-dot"></div>
-                🔍 連線 Tavily 全球生技資料庫
+              <div class="bt-step active" id="bt-step-0">
+                <span class="bt-step-icon">🔍</span>
+                正在連線全球生技資料庫
+              </div>
+              <div class="bt-step" id="bt-step-1">
+                <span class="bt-step-icon">🌐</span>
+                正在擷取網頁深度內容
               </div>
               <div class="bt-step" id="bt-step-2">
-                <div class="bt-step-dot"></div>
-                🌐 Jina.ai 擷取網頁深度內容
+                <span class="bt-step-icon">🧠</span>
+                正在由 AI 進行產業結構化摘要
               </div>
               <div class="bt-step" id="bt-step-3">
-                <div class="bt-step-dot"></div>
-                🧠 AI 進行產業結構化摘要
-              </div>
-              <div class="bt-step" id="bt-step-4">
-                <div class="bt-step-dot"></div>
-                ✉️ 彙整報告並發送電子郵件
+                <span class="bt-step-icon">✉️</span>
+                正在彙整報告並發送電子郵件
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Stage 3: Complete -->
-        <div class="bt-stage" id="bt-stage-3">
-          <div class="bt-complete-card">
-            <div class="bt-check">✅</div>
+        <!-- Stage 3：完成 -->
+        <div class="bt-stage" id="bt-s3">
+          <div class="bt-card">
+            <div class="bt-check-wrap">
+              <div class="bt-check">✅</div>
+            </div>
             <div class="bt-complete-title">分析任務已順利完成！</div>
-            <div class="bt-complete-desc">完整的產業分析報告已自動寄送至您的電子信箱，請至 Gmail 查收。</div>
-            <div class="bt-query-label">本次分析主題</div>
-            <div class="bt-query-value" id="btQueryValue">—</div>
-            <br/>
-            <button class="bt-back-btn" onclick="resetBiotech()">
+            <div class="bt-complete-desc">詳細的產業分析報告已自動寄送至您的電子信箱，請至 Gmail 查收。</div>
+            <div class="bt-topic-label">本次分析主題</div>
+            <div class="bt-topic-value" id="btTopicValue">—</div>
+            <button class="bt-back-btn" onclick="resetAnalysis()">
               ← 返回，進行下一次分析
             </button>
           </div>
@@ -385,17 +370,16 @@
   let isLoading = false;
 
   // ── View 切換 ──
-  function switchView(view) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById(`view-${view}`).classList.add('active');
-    document.getElementById(`nav-${view}`).classList.add('active');
-
-    if (view === 'sales') {
+  function switchView(v) {
+    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item[id^="nav-"]').forEach(el => el.classList.remove('active'));
+    document.getElementById(`view-${v}`).classList.add('active');
+    document.getElementById(`nav-${v}`).classList.add('active');
+    if (v === 'sales') {
       document.getElementById('headerTitle').textContent = '業績查詢助理';
       document.getElementById('headerSub').textContent = 'AI 智能查詢 · 即時回應';
       document.getElementById('btnClear').style.display = 'flex';
-    } else if (view === 'biotech') {
+    } else {
       document.getElementById('headerTitle').textContent = '泛生技產業分析';
       document.getElementById('headerSub').textContent = 'AI 深度研究 · 自動寄送報告';
       document.getElementById('btnClear').style.display = 'none';
@@ -495,58 +479,66 @@
   }
 
   // ── 泛生技產業分析 ──
-  const btSteps = [
-    { id: 'bt-step-1', text: '🔍 正在連線 Tavily 全球生技資料庫...', progress: 20 },
-    { id: 'bt-step-2', text: '🌐 正在由 Jina.ai 擷取網頁深度內容...', progress: 45 },
-    { id: 'bt-step-3', text: '🧠 正在由 AI 進行產業結構化摘要...', progress: 70 },
-    { id: 'bt-step-4', text: '✉️ 正在彙整報告並發送電子郵件...', progress: 90 },
+  const BT_STEPS = [
+    { text: '🔍 正在連線全球生技資料庫...', progress: 20 },
+    { text: '🌐 正在擷取網頁深度內容...', progress: 45 },
+    { text: '🧠 正在由 AI 進行產業結構化摘要...', progress: 72 },
+    { text: '✉️ 正在彙整報告並發送電子郵件...', progress: 92 },
   ];
 
-  let btProgressInterval = null;
-  let btStepIndex = 0;
+  let btTimer = null;
+  let btStepIdx = 0;
 
   function showBtStage(n) {
     document.querySelectorAll('.bt-stage').forEach(s => s.classList.remove('active'));
-    document.getElementById(`bt-stage-${n}`).classList.add('active');
+    document.getElementById(`bt-s${n}`).classList.add('active');
   }
 
   function setProgress(pct) {
-    document.getElementById('btProgressBar').style.width = pct + '%';
-    document.getElementById('btProgressLabel').textContent = pct + '%';
+    document.getElementById('btProgBar').style.width = pct + '%';
+    document.getElementById('btProgPct').textContent = Math.round(pct) + '%';
   }
 
-  function startProgressAnimation() {
-    btStepIndex = 0;
-    setProgress(0);
-    document.querySelectorAll('.bt-step').forEach(s => { s.classList.remove('active','done'); });
+  function runStepAnimation() {
+    btStepIdx = 0;
+    setProgress(5);
+    document.querySelectorAll('.bt-step').forEach(s => s.classList.remove('active', 'done'));
+    document.getElementById('bt-step-0').classList.add('active');
+    document.getElementById('btStatus').textContent = BT_STEPS[0].text;
 
-    btProgressInterval = setInterval(() => {
-      if (btStepIndex >= btSteps.length) return;
-      const step = btSteps[btStepIndex];
-
-      if (btStepIndex > 0) {
-        document.getElementById(btSteps[btStepIndex-1].id).classList.remove('active');
-        document.getElementById(btSteps[btStepIndex-1].id).classList.add('done');
-      }
-      document.getElementById(step.id).classList.add('active');
-      document.getElementById('btStatusText').textContent = step.text;
+    btTimer = setInterval(() => {
+      const prev = document.getElementById(`bt-step-${btStepIdx}`);
+      if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+      btStepIdx++;
+      if (btStepIdx >= BT_STEPS.length) { clearInterval(btTimer); return; }
+      const step = BT_STEPS[btStepIdx];
+      const el = document.getElementById(`bt-step-${btStepIdx}`);
+      if (el) el.classList.add('active');
+      document.getElementById('btStatus').textContent = step.text;
       setProgress(step.progress);
-      btStepIndex++;
-    }, 4000);
+    }, 5000);
   }
 
-  async function startBiotechAnalysis() {
+  function finishAnimation() {
+    clearInterval(btTimer);
+    document.querySelectorAll('.bt-step').forEach(s => { s.classList.remove('active'); s.classList.add('done'); });
+    document.getElementById('btStatus').textContent = '✅ 分析完成！';
+    setProgress(100);
+  }
+
+  async function startAnalysis() {
     const query = document.getElementById('btInput').value.trim();
     if (!query) {
-      document.getElementById('btInput').focus();
-      document.getElementById('btInput').style.borderColor = 'var(--danger)';
-      setTimeout(() => document.getElementById('btInput').style.borderColor = '', 1500);
+      const inp = document.getElementById('btInput');
+      inp.style.borderColor = 'var(--danger)';
+      inp.focus();
+      setTimeout(() => inp.style.borderColor = '', 1500);
       return;
     }
 
     document.getElementById('btStartBtn').disabled = true;
     showBtStage(2);
-    startProgressAnimation();
+    runStepAnimation();
 
     try {
       const res = await fetch(N8N_BIOTECH_URL, {
@@ -559,40 +551,30 @@
         })
       });
 
-      clearInterval(btProgressInterval);
-
-      // 全部步驟標記完成
-      btSteps.forEach(s => {
-        document.getElementById(s.id).classList.remove('active');
-        document.getElementById(s.id).classList.add('done');
-      });
-      setProgress(100);
-      document.getElementById('btStatusText').textContent = '✅ 分析完成！';
-
-      await new Promise(r => setTimeout(r, 800));
-
-      document.getElementById('btQueryValue').textContent = query;
+      finishAnimation();
+      await new Promise(r => setTimeout(r, 700));
+      document.getElementById('btTopicValue').textContent = query;
       showBtStage(3);
 
     } catch (err) {
-      clearInterval(btProgressInterval);
-      showBtStage(1);
+      clearInterval(btTimer);
       document.getElementById('btStartBtn').disabled = false;
+      showBtStage(1);
       alert('連線失敗，請稍後再試。');
     }
   }
 
-  function resetBiotech() {
+  function resetAnalysis() {
     document.getElementById('btInput').value = '';
     document.getElementById('btStartBtn').disabled = false;
+    btStepIdx = 0;
     setProgress(0);
-    btStepIndex = 0;
     document.querySelectorAll('.bt-step').forEach(s => s.classList.remove('active','done'));
     showBtStage(1);
   }
 
   document.getElementById('btInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') startBiotechAnalysis();
+    if (e.key === 'Enter') startAnalysis();
   });
 
   function logout() {
