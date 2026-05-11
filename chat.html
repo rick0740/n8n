@@ -92,6 +92,7 @@
     .msg-bubble.user { background: var(--bubble-usr); color: #fff; border-bottom-right-radius: 4px; }
     .msg-time { font-size: 10px; color: var(--text-dim); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
     .msg-row.user .msg-time { text-align: right; }
+    .msg-disclaimer { font-size: 10px; color: #b0b8c8; margin-top: 6px; line-height: 1.5; font-style: italic; }
     .typing-indicator { display: none; align-items: center; gap: 10px; }
     .typing-indicator.show { display: flex; }
     .typing-dots { display: flex; gap: 4px; background: var(--bubble-ai); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; border-bottom-left-radius: 4px; }
@@ -471,14 +472,23 @@
     marked.setOptions({ breaks: true, gfm: true });
   }
 
+  function cleanMarkdown(text) {
+    return text.split('
+').map(line => {
+      if (/^\s*\|/.test(line)) {
+        return line.replace(/\|\s*/g, '| ').replace(/\s*\|/g, ' |').trim();
+      }
+      return line;
+    }).join('
+');
+  }
+
   function renderContent(content, type) {
     if (type === 'user') {
-      // 使用者訊息純文字
       return content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
     }
-    // AI 訊息用 marked 渲染 Markdown
-    let html = typeof marked !== 'undefined' ? marked.parse(content) : content.replace(/\n/g,'<br>');
-
+    const cleaned = cleanMarkdown(content);
+    const html = typeof marked !== 'undefined' ? marked.parse(cleaned) : cleaned.replace(/\n/g,'<br>');
     return html;
   }
 
@@ -489,11 +499,13 @@
     row.className = `msg-row ${type}`;
     const avatarText = type === 'user' ? (username||'U').slice(0,2).toUpperCase() : 'AI';
     const nameText   = type === 'user' ? (username||'員工') : 'AI 助理';
+    const disclaimer = type === 'ai' ? `<div class="msg-disclaimer">本內容由 AI 輔助生成，提供經營洞察與趨勢參考；實際數據請以各權責單位核定之數字為準。</div>` : '';
     row.innerHTML = `
       <div class="msg-avatar ${type}">${avatarText}</div>
       <div class="msg-content">
         <div class="msg-name">${nameText}</div>
         <div class="msg-bubble ${type}">${renderContent(content, type)}</div>
+        ${disclaimer}
         <div class="msg-time">${getTime()}</div>
       </div>`;
     chatArea.insertBefore(row, typingEl);
