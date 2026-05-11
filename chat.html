@@ -473,25 +473,21 @@
   }
 
   function cleanMarkdown(text) {
-    const lines = text.split('
-');
+    const lines = text.split('\n');
     const result = [];
     for (let i = 0; i < lines.length; i++) {
       let line = lines[i];
       if (/^\s*\|/.test(line)) {
-        // 是表格分隔列（含 --- 或 :---）→ 標準化為 | --- |
         if (/^\s*\|[\s:\-|]+$/.test(line)) {
           const cols = line.split('|').filter(c => c.trim() !== '');
           line = '| ' + cols.map(() => '---').join(' | ') + ' |';
         } else {
-          // 一般表格列：統一空格
           line = line.replace(/\|\s*/g, '| ').replace(/\s*\|/g, ' |').trim();
         }
       }
       result.push(line);
     }
-    return result.join('
-');
+    return result.join('\n');
   }
 
   function renderContent(content, type) {
