@@ -478,8 +478,7 @@
     }
     // AI 訊息用 marked 渲染 Markdown
     let html = typeof marked !== 'undefined' ? marked.parse(content) : content.replace(/\n/g,'<br>');
-    // 負數自動標紅（如 -1,234 或 -12,401）
-    html = html.replace(/(-[\d,]+)/g, '<span class="num-neg">$1</span>');
+
     return html;
   }
 
