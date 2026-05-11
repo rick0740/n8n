@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SYNMOSA 健喬信元 — 業績查詢</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -109,6 +110,71 @@
     .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
     .btn-send svg { width: 16px; height: 16px; fill: #fff; }
     .input-hint { font-size: 11px; color: var(--text-dim); margin-top: 8px; text-align: center; }
+
+    /* ── Markdown 渲染樣式 ── */
+    .msg-bubble.ai h1, .msg-bubble.ai h2, .msg-bubble.ai h3 {
+      color: var(--accent); font-weight: 600; margin: 14px 0 8px;
+      padding-bottom: 4px; border-bottom: 1px solid var(--border);
+    }
+    .msg-bubble.ai h1 { font-size: 16px; }
+    .msg-bubble.ai h2 { font-size: 15px; }
+    .msg-bubble.ai h3 { font-size: 14px; border-bottom: none; color: var(--text); }
+    .msg-bubble.ai p { margin: 6px 0; line-height: 1.75; }
+    .msg-bubble.ai strong { color: var(--text); font-weight: 600; }
+    .msg-bubble.ai em { color: var(--text-mid); font-style: italic; }
+    .msg-bubble.ai ul, .msg-bubble.ai ol {
+      padding-left: 20px; margin: 8px 0;
+    }
+    .msg-bubble.ai li { margin: 4px 0; line-height: 1.6; }
+    .msg-bubble.ai code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(0,119,182,0.08);
+      border: 1px solid rgba(0,119,182,0.15);
+      border-radius: 4px; padding: 1px 6px;
+      font-size: 12px; color: var(--accent);
+    }
+    .msg-bubble.ai pre {
+      background: #f8fafc; border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 14px; margin: 10px 0;
+      overflow-x: auto;
+    }
+    .msg-bubble.ai pre code {
+      background: none; border: none; padding: 0;
+      font-size: 12px; color: var(--text);
+    }
+    .msg-bubble.ai blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 6px 12px; margin: 8px 0;
+      background: var(--accent-lt); border-radius: 0 6px 6px 0;
+      color: var(--text-mid); font-size: 13px;
+    }
+    /* ── 表格樣式 ── */
+    .msg-bubble.ai table {
+      width: 100%; border-collapse: collapse;
+      margin: 12px 0; font-size: 13px;
+      border-radius: 8px; overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .msg-bubble.ai thead tr {
+      background: var(--accent);
+    }
+    .msg-bubble.ai thead th {
+      color: #fff; font-weight: 600;
+      padding: 10px 14px; text-align: left;
+      font-size: 12px; letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+    .msg-bubble.ai tbody tr:nth-child(odd) { background: #fff; }
+    .msg-bubble.ai tbody tr:nth-child(even) { background: var(--bg); }
+    .msg-bubble.ai tbody tr:hover { background: var(--accent-lt); transition: background 0.15s; }
+    .msg-bubble.ai tbody td {
+      padding: 9px 14px; border-bottom: 1px solid var(--border);
+      color: var(--text); font-size: 13px; line-height: 1.5;
+    }
+    .msg-bubble.ai tbody td:first-child { font-weight: 500; }
+    /* 負數紅色顯示 */
+    .msg-bubble.ai .num-neg { color: #e53e3e; font-weight: 600; }
+    .msg-bubble.ai .num-pos { color: var(--success); font-weight: 600; }
 
     /* ── 泛生技分析 View ── */
     .biotech-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; overflow-y: auto; }
@@ -400,6 +466,23 @@
     return `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   }
 
+  // 設定 marked 選項
+  if (typeof marked !== 'undefined') {
+    marked.setOptions({ breaks: true, gfm: true });
+  }
+
+  function renderContent(content, type) {
+    if (type === 'user') {
+      // 使用者訊息純文字
+      return content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+    }
+    // AI 訊息用 marked 渲染 Markdown
+    let html = typeof marked !== 'undefined' ? marked.parse(content) : content.replace(/\n/g,'<br>');
+    // 負數自動標紅（如 -1,234 或 -12,401）
+    html = html.replace(/(-[\d,]+)/g, '<span class="num-neg">$1</span>');
+    return html;
+  }
+
   function addMessage(content, type) {
     const chatArea = document.getElementById('chatArea');
     const typingEl = document.getElementById('typingIndicator');
@@ -411,7 +494,7 @@
       <div class="msg-avatar ${type}">${avatarText}</div>
       <div class="msg-content">
         <div class="msg-name">${nameText}</div>
-        <div class="msg-bubble ${type}">${content.replace(/\n/g,'<br>')}</div>
+        <div class="msg-bubble ${type}">${renderContent(content, type)}</div>
         <div class="msg-time">${getTime()}</div>
       </div>`;
     chatArea.insertBefore(row, typingEl);
