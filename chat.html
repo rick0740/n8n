@@ -512,8 +512,15 @@
     row.className = `msg-row ${type}`;
     const avatarText = type === 'user' ? (username||'U').slice(0,2).toUpperCase() : 'AI';
     const nameText   = type === 'user' ? (username||'員工') : 'AI 助理';
+    // 自動判斷是否為數據/分析回覆才顯示免責聲明
+    function hasAnalyticalContent(text) {
+      return /\|.+\|/.test(text) ||           // 含表格
+             /\d{3,}/.test(text) ||           // 含3位數以上數字
+             /(排名|排行|趨勢|分析|業績|銷售|利潤|毛利|營收|成本|佔比|比較|預估|預測)/.test(text);  // 含分析關鍵字
+    }
+    const showDisclaimer = type === 'ai' && hasAnalyticalContent(content);
     const bubbleContent = type === 'ai'
-      ? renderContent(content, type) + '<div class="msg-disclaimer-inner">本內容由 AI 輔助生成，提供經營洞察與趨勢參考；實際數據請以各權責單位核定之數字為準。</div>'
+      ? renderContent(content, type) + (showDisclaimer ? '<div class="msg-disclaimer-inner">本內容由 AI 輔助生成，提供經營洞察與趨勢參考；實際數據請以各權責單位核定之數字為準。</div>' : '')
       : renderContent(content, type);
     row.innerHTML = `
       <div class="msg-avatar ${type}">${avatarText}</div>
