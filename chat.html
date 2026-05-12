@@ -420,7 +420,7 @@
   // ⚙️ 設定區
   // ============================================
   const N8N_CHAT_URL    = 'https://rick0740-n8n-free.hf.space/webhook/3335c50c-f72c-4cbe-8554-7e397390ba38/chat';
-  const N8N_BIOTECH_URL = 'https://rick0740-n8n-free.hf.space/webhook/biotech-analysis'; // ← 改成你的泛生技 Webhook URL
+  const N8N_BIOTECH_URL = 'https://rick0740-n8n-free.hf.space/webhook/biotech-analysis';
   const LOGIN_URL       = 'https://rick0740.github.io/n8n/';
   // ============================================
 
@@ -512,11 +512,10 @@
     row.className = `msg-row ${type}`;
     const avatarText = type === 'user' ? (username||'U').slice(0,2).toUpperCase() : 'AI';
     const nameText   = type === 'user' ? (username||'員工') : 'AI 助理';
-    // 自動判斷是否為數據/分析回覆才顯示免責聲明
     function hasAnalyticalContent(text) {
-      return /\|.+\|/.test(text) ||           // 含表格
-             /\d{3,}/.test(text) ||           // 含3位數以上數字
-             /(排名|排行|趨勢|分析|業績|銷售|利潤|毛利|營收|成本|佔比|比較|預估|預測)/.test(text);  // 含分析關鍵字
+      return /\|.+\|/.test(text) ||
+             /\d{3,}/.test(text) ||
+             /(排名|排行|趨勢|分析|業績|銷售|營收|佔比|比較|預估|預測)/.test(text);
     }
     const showDisclaimer = type === 'ai' && hasAnalyticalContent(content);
     const bubbleContent = type === 'ai'
@@ -556,7 +555,10 @@
           action: 'sendMessage',
           sessionId,
           chatInput: msg,
-          role: sessionStorage.getItem('auth_role')
+          role: sessionStorage.getItem('auth_role'),
+          // ✅ 修正：加入 costAccess，讓 n8n AI Agent 的 System Prompt 可正確判斷成本利潤權限
+          // 白名單邏輯：只有明確為 Y 才開放，空值或其他任何值均視為 N
+          costAccess: sessionStorage.getItem('auth_cost_yn') || 'N'
         })
       });
       const data = await res.json();
