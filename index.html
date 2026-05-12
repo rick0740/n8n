@@ -438,6 +438,9 @@
         sessionStorage.setItem('auth_user', data.username);
         sessionStorage.setItem('auth_expires', data.expiresAt);
         sessionStorage.setItem('auth_role', data.role);
+        sessionStorage.setItem('auth_cost_yn', data.cost_YN || 'N');
+        // 成本利潤查閱權限（來源：sys_users 的 cost_YN 欄位）
+        // 白名單邏輯：僅 'Y' 允許查看，其餘任何值（含空值、錯字、未定義）一律視為 'N'
         window.location.href = REDIRECT_URL;
       } else {
         errorText.textContent = data.message || '帳號或密碼錯誤，請重新輸入';
